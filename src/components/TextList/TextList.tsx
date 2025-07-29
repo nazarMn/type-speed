@@ -1,6 +1,6 @@
 import React from 'react'
 import axios from 'axios'
-import './textList.css' // Assuming you have a CSS file for styles
+import './textList.css'
 
 export default function TextList() {
   const [text, setText] = React.useState(null);

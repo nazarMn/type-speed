@@ -1,5 +1,6 @@
 import React from 'react'
 import axios from 'axios'
+import './textList.css' // Assuming you have a CSS file for styles
 
 export default function TextList() {
   const [text, setText] = React.useState(null);
@@ -16,9 +17,16 @@ export default function TextList() {
   }, []); 
 
   return (
-    <div>
-     
-      {text ? <p>{text}</p> : <p>Loading...</p>}
-    </div>
+  <div className="w-[90%] h-[280px] text-center p-4 bg-white shadow-md rounded-2xl border border-gray-300 mx-auto overflow-y-auto custom-scroll">
+  {text ? (
+    <p className="text-[32px] font-mono tracking-wide text-gray-800 leading-relaxed select-none">
+      {text}
+    </p>
+  ) : (
+    <p className="text-gray-400 italic">Loading...</p>
+  )}
+</div>
+
+
   )
 }

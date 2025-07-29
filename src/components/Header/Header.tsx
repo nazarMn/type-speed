@@ -18,7 +18,7 @@ export default function Header() {
       </nav>
 
       <div className="flex items-center gap-4">
-        <button className="text-lg font-semibold text-white bg-[#0A335C] px-5 py-2 rounded-xl hover:bg-[#1a4f8a] transition">
+        <button className="cursor-pointer text-lg font-semibold text-white bg-[#0A335C] px-5 py-2 rounded-xl hover:bg-[#1a4f8a] transition">
           Вхід
         </button>
         <i className="fa-solid fa-user-astronaut fa-xl cursor-pointer text-[#0A335C] hover:text-[#1a4f8a] transition"></i>

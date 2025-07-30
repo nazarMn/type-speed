@@ -8,17 +8,26 @@ export default function TypingTest() {
   const [timeLeft, setTimeLeft] = useState<number>(60);
   const [isActive, setIsActive] = useState<boolean>(false);
   const [isFinished, setIsFinished] = useState<boolean>(false);
-  const [cpm, setCpm] = useState<number | null>(null); 
+  const [cpm, setCpm] = useState<number | null>(null);
   const [accuracy, setAccuracy] = useState<number | null>(null);
   const [mistakes, setMistakes] = useState<number>(0);
   const [hasError, setHasError] = useState<boolean>(false);
   const textRef = useRef<HTMLDivElement>(null);
 
+  const fetchText = async () => {
+    try {
+      const res = await axios.get<{ text: string }>(
+        "http://localhost:3000/api/random-text"
+      );
+      setText(res.data.text);
+    } catch (err) {
+      console.error(err);
+      setText("Помилка завантаження тексту.");
+    }
+  };
+
   useEffect(() => {
-    axios
-      .get<{ text: string }>("http://localhost:3000/api/random-text")
-      .then((res) => setText(res.data.text))
-      .catch((err) => console.error(err));
+    fetchText();
   }, []);
 
   useEffect(() => {
@@ -40,7 +49,7 @@ export default function TypingTest() {
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (isFinished || !text) return;
 
-    if (!isActive) setIsActive(true); 
+    if (!isActive) setIsActive(true);
 
     if (e.key.length === 1) {
       const currentChar = text[typedIndex];
@@ -102,6 +111,19 @@ export default function TypingTest() {
     setIsFinished(true);
   };
 
+  const restartTest = async () => {
+    await fetchText();
+    setIsActive(false);
+    setIsFinished(false);
+    setTypedIndex(0);
+    setTimeLeft(60);
+    setCpm(null);
+    setAccuracy(null);
+    setMistakes(0);
+    setHasError(false);
+    if (textRef.current) textRef.current.focus();
+  };
+
   const renderText = () => {
     return text.split("").map((char, i) => {
       let className = "";
@@ -126,14 +148,11 @@ export default function TypingTest() {
         Тест швидкості друку
       </h2>
       <p className="text-gray-500 mb-4">
-        Тисни <strong>Старт</strong> і набирай текст буква в букву. 
-        Помилився – буква світиться <span className="text-red-500">червоним</span>, 
-        натисни правильну і рухайся далі
+        Тисни <strong>Старт</strong> і набирай текст буква в букву. Помилився – буква світиться{" "}
+        <span className="text-red-500">червоним</span>, натисни правильну і рухайся далі
       </p>
 
-      <div className="text-lg font-bold text-[#0A335C] mb-3">
-        Час: {timeLeft} с
-      </div>
+      <div className="text-lg font-bold text-[#0A335C] mb-3">Час: {timeLeft} с</div>
 
       <div
         className="w-[90%] min-h-[120px] p-4 bg-white shadow-md rounded-2xl border border-gray-300 mb-4 text-lg leading-relaxed outline-none cursor-text"
@@ -166,7 +185,7 @@ export default function TypingTest() {
           </p>
           <button
             className="mt-4 bg-[#0A335C] text-white px-6 py-2 rounded-xl hover:bg-[#0a447d]"
-            onClick={startTest}
+            onClick={restartTest}
           >
             Пройти ще раз
           </button>

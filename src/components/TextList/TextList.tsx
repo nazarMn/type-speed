@@ -181,13 +181,14 @@ useEffect(() => {
       <div className="text-xl font-bold text-[#0A335C] mb-3">Час: {timeLeft} с</div>
 
 <div
-  className="w-[90%] h-[74px] text-[41px] pl-4 pr-4 bg-white shadow-md rounded-2xl border border-gray-300 mb-4 text-lg leading-relaxed outline-none cursor-text overflow-y-auto whitespace-pre-wrap break-words"
+  className="w-[90%] h-[74px] text-[41px] pl-4 pr-4 bg-white shadow-md rounded-2xl border border-gray-300 mb-4 text-lg leading-relaxed outline-none cursor-text overflow-y-auto whitespace-pre-wrap break-words custom-scroll"
   tabIndex={0}
   onKeyDown={handleKeyDown}
   ref={textRef}
 >
   {renderText()}
 </div>
+
 
 
 

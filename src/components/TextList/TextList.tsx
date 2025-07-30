@@ -143,16 +143,13 @@ export default function TypingTest() {
   };
 
   return (
-    <div className="flex flex-col items-center mt-8">
-      <h2 className="text-2xl font-bold mb-4 text-[#0A335C]">
+    <div className="flex flex-col items-center">
+      <h2 className="text-[48px] font-bold mb-4 text-[#0A335C] ">
         Тест швидкості друку
       </h2>
-      <p className="text-gray-500 mb-4">
-        Тисни <strong>Старт</strong> і набирай текст буква в букву. Помилився – буква світиться{" "}
-        <span className="text-red-500">червоним</span>, натисни правильну і рухайся далі
-      </p>
+   
 
-      <div className="text-lg font-bold text-[#0A335C] mb-3">Час: {timeLeft} с</div>
+      <div className="text-xl font-bold text-[#0A335C] mb-3">Час: {timeLeft} с</div>
 
       <div
         className="w-[90%] min-h-[120px] p-4 bg-white shadow-md rounded-2xl border border-gray-300 mb-4 text-lg leading-relaxed outline-none cursor-text"
@@ -173,7 +170,8 @@ export default function TypingTest() {
       )}
 
       {isFinished && (
-        <div className="mt-4 text-xl font-bold text-[#0A335C]">
+        <div className="mt-4 text-xl font-bold text-[#0A335C] flex flex-col items-center">
+          <div className="mb-4 flex items-center gap-16">
           <p>
             Швидкість: <span className="text-green-600">{cpm}</span> зн./хв
           </p>
@@ -183,6 +181,8 @@ export default function TypingTest() {
           <p>
             Точність: <span className="text-blue-600">{accuracy}%</span>
           </p>
+
+          </div>
           <button
             className="mt-4 bg-[#0A335C] text-white px-6 py-2 rounded-xl hover:bg-[#0a447d]"
             onClick={restartTest}

@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function Header() {
   return (
-    <header className="w-full h-[80px]  flex items-center justify-between px-10">
+    <header className="w-full h-[50px]  flex items-center justify-between px-10">
       
 
       <div className="flex items-center">

@@ -6,7 +6,7 @@ function App() {
 
 
   return (
-    <div className="w-full h-screen flex flex-col items-center justify-start bg-gray-100 gap-16 pt-[20px]">
+    <div className="w-full h-screen flex flex-col items-center justify-start bg-gray-100 pt-[20px]">
 
       <Header />
      

@@ -11,7 +11,7 @@ function App() {
        
         
         <Routes>
-    <Route  path="/" element={  <>    <Header />   <TextList /> </>} />
+    <Route  path="/" element={  <div className='w-full h-full pt-[20px]'>    <Header />   <TextList /> </div>} />
 
           <Route path="/registration" element={<Registration />} />
         </Routes>

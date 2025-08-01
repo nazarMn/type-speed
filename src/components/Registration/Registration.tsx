@@ -1,10 +1,20 @@
 import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 export default function Registration() {
   const [isRegister, setIsRegister] = useState(false)
+  const navigate = useNavigate()
 
   return (
-    <div className="w-full flex justify-center items-center h-screen bg-gradient-to-br from-blue-100 via-gray-100 to-blue-50">
+    <div className="w-full flex justify-center items-center h-screen bg-gradient-to-br from-blue-100 via-gray-100 to-blue-50 relative">
+      
+      <button
+        onClick={() => navigate(-1)}
+        className="absolute top-6 right-6 text-gray-500 hover:text-gray-800 transition text-3xl font-bold cursor-pointer"
+      >
+        &times;
+      </button>
+
       <div className="w-[540px] min-h-[440px] bg-white shadow-2xl rounded-2xl flex flex-col items-center px-10 py-8">
         
         <h1 className="text-4xl font-extrabold mb-3 text-blue-700 tracking-wide">
@@ -12,7 +22,7 @@ export default function Registration() {
         </h1>
         
         <h2 className="text-lg text-gray-600 mb-8">
-          {isRegister ? 'Реєстрація нового користувача' : 'Увійти в акаунт'}
+          {isRegister ? 'Реєстрація нового акаунта' : 'Увійти в акаунт'}
         </h2>
         
         {!isRegister && (

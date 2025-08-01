@@ -190,7 +190,7 @@ export default function TypingTest() {
 
       {!isActive && !isFinished && (
         <button
-          className="bg-[#0A335C] text-white px-6 py-2 rounded-xl hover:bg-[#0a447d]"
+          className="bg-[#0A335C] text-white px-6 py-2 rounded-xl hover:bg-[#0a447d] cursor-pointer"
           onClick={startTest}
         >
           Старт

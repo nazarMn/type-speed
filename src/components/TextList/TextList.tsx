@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import "./textList.css";
+import RegisterModal from "../RegisterModal/RegisterModal";
 
 export default function TypingTest() {
   const [text, setText] = useState<string>("");
@@ -12,6 +13,7 @@ export default function TypingTest() {
   const [accuracy, setAccuracy] = useState<number | null>(null);
   const [mistakes, setMistakes] = useState<number>(0);
   const [hasError, setHasError] = useState<boolean>(false);
+  const [showModal, setShowModal] = useState<boolean>(false);
   const textRef = useRef<HTMLDivElement>(null);
 
   const fetchText = async () => {
@@ -46,55 +48,53 @@ export default function TypingTest() {
     }
   }, [text]);
 
- const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-  if (isFinished || !text) return;
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (isFinished || !text) return;
 
-  if (e.key === " " || e.key === "Spacebar") {
-    e.preventDefault();
-  }
+    if (e.key === " " || e.key === "Spacebar") {
+      e.preventDefault();
+    }
 
-  if (!isActive) setIsActive(true);
+    if (!isActive) setIsActive(true);
 
-  if (e.key.length === 1) {
-    const currentChar = text[typedIndex];
+    if (e.key.length === 1) {
+      const currentChar = text[typedIndex];
 
-    if (e.key === currentChar) {
-      const newIndex = typedIndex + 1;
-      setTypedIndex(newIndex);
-      setHasError(false);
+      if (e.key === currentChar) {
+        const newIndex = typedIndex + 1;
+        setTypedIndex(newIndex);
+        setHasError(false);
 
-      const correctChars = newIndex - mistakes;
-      const elapsedMinutes = (60 - timeLeft) / 60;
+        const correctChars = newIndex - mistakes;
+        const elapsedMinutes = (60 - timeLeft) / 60;
 
-      if (elapsedMinutes > 0) {
-        setCpm(Math.round(correctChars / elapsedMinutes));
+        if (elapsedMinutes > 0) {
+          setCpm(Math.round(correctChars / elapsedMinutes));
+          setAccuracy(
+            Math.max(
+              0,
+              Math.round((correctChars / (correctChars + mistakes)) * 100)
+            )
+          );
+        }
+
+        if (newIndex >= text.length) {
+          finishTest();
+        }
+      } else {
+        setMistakes((prev) => prev + 1);
+        setHasError(true);
+
+        const correctChars = typedIndex - mistakes;
         setAccuracy(
           Math.max(
             0,
-            Math.round((correctChars / (correctChars + mistakes)) * 100)
+            Math.round((correctChars / (correctChars + mistakes + 1)) * 100)
           )
         );
       }
-
-      if (newIndex >= text.length) {
-        finishTest();
-      }
-    } else {
-      setMistakes((prev) => prev + 1);
-      setHasError(true);
-
-      const correctChars = typedIndex - mistakes;
-      setAccuracy(
-        Math.max(
-          0,
-          Math.round(
-            (correctChars / (correctChars + mistakes + 1)) * 100
-          )
-        )
-      );
     }
-  }
-};
+  };
 
   const startTest = () => {
     setIsActive(true);
@@ -111,6 +111,7 @@ export default function TypingTest() {
   const finishTest = () => {
     setIsActive(false);
     setIsFinished(true);
+    setShowModal(true);
   };
 
   const restartTest = async () => {
@@ -144,53 +145,48 @@ export default function TypingTest() {
     });
   };
 
-useEffect(() => {
-  if (textRef.current) {
-    const container = textRef.current;
-    const activeChar = container.querySelector(
-      "span.bg-yellow-200, span.bg-red-300"
-    );
+  useEffect(() => {
+    if (textRef.current) {
+      const container = textRef.current;
+      const activeChar = container.querySelector(
+        "span.bg-yellow-200, span.bg-red-300"
+      );
 
-    if (activeChar) {
-      const activeCharRect = activeChar.getBoundingClientRect();
-      const containerRect = container.getBoundingClientRect();
+      if (activeChar) {
+        const activeCharRect = activeChar.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
 
-      if (activeCharRect.bottom > containerRect.bottom) {
-        container.scrollTop += activeCharRect.bottom - containerRect.bottom + 5;
-      }
+        if (activeCharRect.bottom > containerRect.bottom) {
+          container.scrollTop +=
+            activeCharRect.bottom - containerRect.bottom + 5;
+        }
 
-      if (activeCharRect.top < containerRect.top) {
-        container.scrollTop -= containerRect.top - activeCharRect.top + 5;
+        if (activeCharRect.top < containerRect.top) {
+          container.scrollTop -=
+            containerRect.top - activeCharRect.top + 5;
+        }
       }
     }
-  }
-}, [typedIndex]);
-
-
-
-
-
+  }, [typedIndex]);
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex flex-col items-center relative">
       <h2 className="text-[48px] font-bold mb-4 text-[#0A335C] ">
         Тест швидкості друку
       </h2>
-   
 
-      <div className="text-xl font-bold text-[#0A335C] mb-3">Час: {timeLeft} с</div>
+      <div className="text-xl font-bold text-[#0A335C] mb-3">
+        Час: {timeLeft} с
+      </div>
 
-<div
-  className="w-[90%] h-[74px] text-[41px] pl-4 pr-4 bg-white shadow-md rounded-2xl border border-gray-300 mb-4 text-lg leading-relaxed outline-none cursor-text overflow-y-auto whitespace-pre-wrap break-words custom-scroll"
-  tabIndex={0}
-  onKeyDown={handleKeyDown}
-  ref={textRef}
->
-  {renderText()}
-</div>
-
-
-
+      <div
+        className="w-[90%] h-[74px] text-[41px] pl-4 pr-4 bg-white shadow-md rounded-2xl border border-gray-300 mb-4 text-lg leading-relaxed outline-none cursor-text overflow-y-auto whitespace-pre-wrap break-words custom-scroll"
+        tabIndex={0}
+        onKeyDown={handleKeyDown}
+        ref={textRef}
+      >
+        {renderText()}
+      </div>
 
       {!isActive && !isFinished && (
         <button
@@ -204,16 +200,15 @@ useEffect(() => {
       {isFinished && (
         <div className="mt-4 text-xl font-bold text-[#0A335C] flex flex-col items-center">
           <div className="mb-4 flex items-center gap-16">
-          <p>
-            Швидкість: <span className="text-green-600">{cpm}</span> зн./хв
-          </p>
-          <p>
-            Помилок: <span className="text-red-600">{mistakes}</span>
-          </p>
-          <p>
-            Точність: <span className="text-blue-600">{accuracy}%</span>
-          </p>
-
+            <p>
+              Швидкість: <span className="text-green-600">{cpm}</span> зн./хв
+            </p>
+            <p>
+              Помилок: <span className="text-red-600">{mistakes}</span>
+            </p>
+            <p>
+              Точність: <span className="text-blue-600">{accuracy}%</span>
+            </p>
           </div>
           <button
             className="mt-4 bg-[#0A335C] text-white px-6 py-2 rounded-xl hover:bg-[#0a447d]"
@@ -223,6 +218,8 @@ useEffect(() => {
           </button>
         </div>
       )}
+
+      <RegisterModal show={showModal} onClose={() => setShowModal(false)} />
     </div>
   );
 }

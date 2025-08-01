@@ -26,7 +26,7 @@ const RegisterModal: React.FC<RegisterModalProps> = ({ show, onClose }) => {
             Закрити
           </button>
           <button
-            onClick={() => (window.location.href = "/register")}
+            onClick={() => (window.location.href = "/registration")}
             className="bg-[#0A335C] text-white px-4 py-2 rounded-xl hover:bg-[#0a447d] cursor-pointer"
           >
             Зареєструватися

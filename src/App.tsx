@@ -1,19 +1,22 @@
 import './App.css'
 import TextList from './components/TextList/TextList'
 import Header from './components/Header/Header'
+import Registration from './components/Registration/Registration'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 function App() {
-
-
   return (
-    <div className="w-full h-screen flex flex-col items-center justify-start bg-gray-100 pt-[20px]">
+    <Router>
+      <div className="w-full h-screen flex flex-col items-center justify-start bg-gray-100 pt-[20px]">
+       
+        
+        <Routes>
+    <Route  path="/" element={  <>    <Header />   <TextList /> </>} />
 
-      <Header />
-     
-        <TextList />
-   
-     
-    </div>
+          <Route path="/registration" element={<Registration />} />
+        </Routes>
+      </div>
+    </Router>
   )
 }
 

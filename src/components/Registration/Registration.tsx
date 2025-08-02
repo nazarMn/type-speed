@@ -121,7 +121,7 @@ export default function Registration() {
 
           <button
             type="submit"
-            className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-all"
+            className="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-all cursor-pointer"
           >
             {isRegister ? 'Зареєструватися' : 'Увійти'}
           </button>

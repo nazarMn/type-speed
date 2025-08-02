@@ -7,6 +7,7 @@ export default function TypingTest() {
   const [text, setText] = useState<string>("");
   const [typedIndex, setTypedIndex] = useState<number>(0);
   const [timeLeft, setTimeLeft] = useState<number>(60);
+  const [selectedTime, setSelectedTime] = useState<number>(60);
   const [isActive, setIsActive] = useState<boolean>(false);
   const [isFinished, setIsFinished] = useState<boolean>(false);
   const [cpm, setCpm] = useState<number | null>(null);
@@ -48,6 +49,13 @@ export default function TypingTest() {
     }
   }, [text]);
 
+  const handleTimeSelect = (t: number) => {
+    setSelectedTime(t);
+    if (!isActive && !isFinished) {
+      setTimeLeft(t);
+    }
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (isFinished || !text) return;
 
@@ -66,7 +74,7 @@ export default function TypingTest() {
         setHasError(false);
 
         const correctChars = newIndex - mistakes;
-        const elapsedMinutes = (60 - timeLeft) / 60;
+        const elapsedMinutes = (selectedTime - timeLeft) / 60;
 
         if (elapsedMinutes > 0) {
           setCpm(Math.round(correctChars / elapsedMinutes));
@@ -100,7 +108,7 @@ export default function TypingTest() {
     setIsActive(true);
     setIsFinished(false);
     setTypedIndex(0);
-    setTimeLeft(60);
+    setTimeLeft(selectedTime);
     setCpm(null);
     setAccuracy(null);
     setMistakes(0);
@@ -119,7 +127,7 @@ export default function TypingTest() {
     setIsActive(false);
     setIsFinished(false);
     setTypedIndex(0);
-    setTimeLeft(60);
+    setTimeLeft(selectedTime);
     setCpm(null);
     setAccuracy(null);
     setMistakes(0);
@@ -171,13 +179,33 @@ export default function TypingTest() {
 
   return (
     <div className="flex flex-col items-center relative">
-      <h2 className="text-[48px] font-bold mb-4 text-[#0A335C] ">
+      <h2 className="text-[48px] font-bold mb-4 text-[#0A335C]">
         Тест швидкості друку
       </h2>
 
-      <div className="text-xl font-bold text-[#0A335C] mb-3">
+      {!isActive && !isFinished && (
+        <div className="mb-4 flex gap-4">
+          {[30, 60, 120].map((t) => (
+            <button
+              key={t}
+              className={`px-5 py-2 rounded-full transition-all duration-200 border-2 text-lg font-semibold 
+                ${
+                  selectedTime === t
+                    ? "bg-[#0A335C] text-white border-[#0A335C] scale-110 shadow-md"
+                    : "bg-white text-[#0A335C] border-gray-300 hover:bg-[#e7eef7]"
+                }`}
+              onClick={() => handleTimeSelect(t)}
+            >
+              {t} c
+            </button>
+          ))}
+        </div>
+      )}
+
+      <div className="text-2xl font-bold text-[#0A335C] mb-3">
         Час: {timeLeft} с
       </div>
+
 
       <div
         className="w-[90%] h-[74px] text-[41px] pl-4 pr-4 bg-white shadow-md rounded-2xl border border-gray-300 mb-4 text-lg leading-relaxed outline-none cursor-text overflow-y-auto whitespace-pre-wrap break-words custom-scroll"
@@ -190,7 +218,7 @@ export default function TypingTest() {
 
       {!isActive && !isFinished && (
         <button
-          className="bg-[#0A335C] text-white px-6 py-2 rounded-xl hover:bg-[#0a447d] cursor-pointer"
+          className="bg-[#0A335C] text-white px-6 py-2 rounded-xl text-lg font-semibold hover:bg-[#0a447d] cursor-pointer shadow-md"
           onClick={startTest}
         >
           Старт

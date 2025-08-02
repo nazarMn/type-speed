@@ -10,11 +10,13 @@ export default function Registration() {
   const [password, setPassword] = useState<string>('')
   const [confirmPassword, setConfirmPassword] = useState<string>('')
   const [error, setError] = useState<string>('')
+  const [showRemind, setShowRemind] = useState<boolean>(false)
   const navigate = useNavigate()
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError('')
+    setShowRemind(false)
 
     if (isRegister) {
       if (password !== confirmPassword) {
@@ -35,7 +37,26 @@ export default function Registration() {
         setError(err.response?.data?.message || 'Помилка при реєстрації')
       }
     } else {
-      alert('Функція входу ще не реалізована')
+      try {
+        const res = await axios.post('http://localhost:3000/api/login', {
+          email,
+          password
+        })
+        localStorage.setItem('token', res.data.token)
+        navigate('/')
+      } catch (err: any) {
+        const msg = err.response?.data?.message
+        if (msg === 'Невірний email і пароль') {
+          setError('Email та пароль невірний')
+        } else if (msg === 'Невірний пароль') {
+          setError('Невірний пароль')
+          setShowRemind(true)
+        } else if (msg === 'Користувача не знайдено') {
+          setError('Email невірний')
+        } else {
+          setError('Помилка при вході')
+        }
+      }
     }
   }
 
@@ -102,7 +123,9 @@ export default function Registration() {
             placeholder="Пароль"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+            className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:border-blue-500 ${
+              error === 'Невірний пароль' ? 'border-red-500' : 'border-gray-300'
+            }`}
             required
           />
 
@@ -118,6 +141,16 @@ export default function Registration() {
           )}
 
           {error && <p className="text-red-500 text-sm">{error}</p>}
+
+          {showRemind && (
+            <button
+              type="button"
+              className="w-full py-2 bg-red-100 text-red-700 rounded-lg font-semibold mt-2 hover:bg-red-200 transition-all cursor-pointer"
+              onClick={() => alert('Функція нагадування пароля ще не реалізована')}
+            >
+              Нагадати пароль
+            </button>
+          )}
 
           <button
             type="submit"

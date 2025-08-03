@@ -72,13 +72,13 @@ export default function Header() {
                   Привіт, <b>{user.username}</b>
                 </p>
                 <button
-                  className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
                   onClick={() => alert('Перейти в налаштування')}
                 >
                   <i className="fa-solid fa-gear mr-2"></i> Налаштування
                 </button>
                 <button
-                  className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100"
+                  className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
                   onClick={handleLogout}
                 >
                   <i className="fa-solid fa-right-from-bracket mr-2"></i> Вийти

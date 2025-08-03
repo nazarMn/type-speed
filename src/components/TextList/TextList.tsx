@@ -119,7 +119,14 @@ export default function TypingTest() {
   const finishTest = () => {
     setIsActive(false);
     setIsFinished(true);
-    setShowModal(true);
+
+    // Перевірка токена – якщо нема, відкриваємо модалку
+    const token = localStorage.getItem("token");
+    if (!token) {
+      setShowModal(true);
+    } else {
+      setShowModal(false);
+    }
   };
 
   const restartTest = async () => {
@@ -153,30 +160,6 @@ export default function TypingTest() {
     });
   };
 
-  useEffect(() => {
-    if (textRef.current) {
-      const container = textRef.current;
-      const activeChar = container.querySelector(
-        "span.bg-yellow-200, span.bg-red-300"
-      );
-
-      if (activeChar) {
-        const activeCharRect = activeChar.getBoundingClientRect();
-        const containerRect = container.getBoundingClientRect();
-
-        if (activeCharRect.bottom > containerRect.bottom) {
-          container.scrollTop +=
-            activeCharRect.bottom - containerRect.bottom + 5;
-        }
-
-        if (activeCharRect.top < containerRect.top) {
-          container.scrollTop -=
-            containerRect.top - activeCharRect.top + 5;
-        }
-      }
-    }
-  }, [typedIndex]);
-
   return (
     <div className="flex flex-col items-center relative">
       <h2 className="text-[48px] font-bold mb-4 text-[#0A335C]">
@@ -205,7 +188,6 @@ export default function TypingTest() {
       <div className="text-2xl font-bold text-[#0A335C] mb-3">
         Час: {timeLeft} с
       </div>
-
 
       <div
         className="w-[90%] h-[74px] text-[41px] pl-4 pr-4 bg-white shadow-md rounded-2xl border border-gray-300 mb-4 text-lg leading-relaxed outline-none cursor-text overflow-y-auto whitespace-pre-wrap break-words custom-scroll"

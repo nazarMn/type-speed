@@ -1,7 +1,11 @@
-import React, { useState } from 'react'
-import type { FormEvent } from 'react'
+import React, { useState, useEffect, FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
+
+interface LoginResponse {
+  token: string
+  message?: string
+}
 
 export default function Registration() {
   const [isRegister, setIsRegister] = useState<boolean>(false)
@@ -12,6 +16,11 @@ export default function Registration() {
   const [error, setError] = useState<string>('')
   const [showRemind, setShowRemind] = useState<boolean>(false)
   const navigate = useNavigate()
+
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (token) navigate('/')
+  }, [navigate])
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -24,13 +33,12 @@ export default function Registration() {
       }
 
       try {
-        const res = await axios.post('http://localhost:3000/api/register', {
+        const res = await axios.post<LoginResponse>('http://localhost:3000/api/register', {
           email,
           username,
           password
         })
-
-        alert(res.data.message)
+        alert(res.data.message || 'Реєстрація успішна!')
         localStorage.setItem('token', res.data.token)
         navigate('/')
       } catch (err: any) {
@@ -38,7 +46,7 @@ export default function Registration() {
       }
     } else {
       try {
-        const res = await axios.post('http://localhost:3000/api/login', {
+        const res = await axios.post<LoginResponse>('http://localhost:3000/api/login', {
           email,
           password
         })
@@ -77,25 +85,6 @@ export default function Registration() {
         <h2 className="text-lg text-gray-600 mb-8">
           {isRegister ? 'Реєстрація нового акаунта' : 'Увійти в акаунт'}
         </h2>
-
-        {!isRegister && (
-          <>
-            <button className="w-full flex items-center justify-center gap-3 py-3 px-5 bg-white border border-gray-300 rounded-lg hover:shadow-md transition-all duration-200">
-              <img
-                className="w-6 h-6"
-                src="https://www.svgrepo.com/show/355037/google.svg"
-                alt="Google Icon"
-              />
-              <span className="text-gray-700 font-medium">Продовжити з Google</span>
-            </button>
-
-            <div className="w-full flex items-center my-6">
-              <span className="flex-grow h-px bg-gray-300"></span>
-              <span className="px-3 text-gray-400 text-sm">або</span>
-              <span className="flex-grow h-px bg-gray-300"></span>
-            </div>
-          </>
-        )}
 
         <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
           <input

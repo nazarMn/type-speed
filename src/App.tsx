@@ -8,11 +8,16 @@ function App() {
   return (
     <Router>
       <div className="w-full h-screen flex flex-col items-center justify-start bg-gray-100">
-       
-        
         <Routes>
-    <Route  path="/" element={  <div className='w-full h-full pt-[20px]'>    <Header />   <TextList /> </div>} />
-
+          <Route
+            path="/"
+            element={
+              <div className="w-full h-full pt-[20px]">
+                <Header />
+                <TextList />
+              </div>
+            }
+          />
           <Route path="/registration" element={<Registration />} />
         </Routes>
       </div>

@@ -10,7 +10,6 @@ export default function MagicLogin() {
   useEffect(() => {
     if (!token) return
 
-    // перевірити токен та залогінити користувача
     axios.get('http://localhost:3000/api/me', {
       headers: {
         Authorization: `Bearer ${token}`

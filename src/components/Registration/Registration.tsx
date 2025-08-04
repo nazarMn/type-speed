@@ -1,4 +1,5 @@
-import React, { useState, useEffect, FormEvent } from 'react'
+import React, { useState, useEffect } from 'react'
+import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
@@ -135,7 +136,15 @@ export default function Registration() {
             <button
               type="button"
               className="w-full py-2 bg-red-100 text-red-700 rounded-lg font-semibold mt-2 hover:bg-red-200 transition-all cursor-pointer"
-              onClick={() => alert('Функція нагадування пароля ще не реалізована')}
+              onClick={async () => {
+  try {
+    await axios.post('http://localhost:3000/api/magic-link', { email });
+    alert('Magic link надіслано на пошту');
+  } catch (err: any) {
+    alert(err.response?.data?.message || 'Помилка при надсиланні посилання');
+  }
+}}
+
             >
               Нагадати пароль
             </button>

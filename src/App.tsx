@@ -2,7 +2,7 @@ import './App.css'
 import TextList from './components/TextList/TextList'
 import Header from './components/Header/Header'
 import Registration from './components/Registration/Registration'
-import MagicLogin from './components/Registration/MagicLogin' // 🔄 виправлено назву компонента
+import MagicLogin from './components/Registration/MagicLogin'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
 function App() {
@@ -21,7 +21,6 @@ function App() {
           />
           <Route path="/registration" element={<Registration />} />
 
-          {/* ✅ Додай цей маршрут */}
           <Route path="/magic-login" element={<MagicLogin />} />
         </Routes>
       </div>

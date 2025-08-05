@@ -1,6 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import "./textList.css";
+import TimerSelector from "./TimerSelector";
+import TypingArea from "./TypingArea";
+import Results from "./Results";
+import StartButton from "./StartButton";
 import RegisterModal from "../RegisterModal/RegisterModal";
 
 export default function TypingTest() {
@@ -15,7 +19,8 @@ export default function TypingTest() {
   const [mistakes, setMistakes] = useState<number>(0);
   const [hasError, setHasError] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
-  const textRef = useRef<HTMLDivElement>(null);
+  const textRef = useRef<HTMLDivElement | null>(null);
+  
 
   const fetchText = async () => {
     try {
@@ -120,7 +125,6 @@ export default function TypingTest() {
     setIsActive(false);
     setIsFinished(true);
 
-    // Перевірка токена – якщо нема, відкриваємо модалку
     const token = localStorage.getItem("token");
     if (!token) {
       setShowModal(true);
@@ -141,24 +145,7 @@ export default function TypingTest() {
     setHasError(false);
     if (textRef.current) textRef.current.focus();
   };
-
-  const renderText = () => {
-    return text.split("").map((char, i) => {
-      let className = "";
-
-      if (i < typedIndex) {
-        className = "text-green-600";
-      } else if (i === typedIndex) {
-        className = hasError ? "bg-red-300" : "bg-yellow-200";
-      }
-
-      return (
-        <span key={i} className={className}>
-          {char}
-        </span>
-      );
-    });
-  };
+  
 
   return (
     <div className="flex flex-col items-center relative">
@@ -167,66 +154,30 @@ export default function TypingTest() {
       </h2>
 
       {!isActive && !isFinished && (
-        <div className="mb-4 flex gap-4">
-          {[30, 60, 120].map((t) => (
-            <button
-              key={t}
-              className={`px-5 py-2 rounded-full transition-all duration-200 border-2 text-lg font-semibold 
-                ${
-                  selectedTime === t
-                    ? "bg-[#0A335C] text-white border-[#0A335C] scale-110 shadow-md"
-                    : "bg-white text-[#0A335C] border-gray-300 hover:bg-[#e7eef7]"
-                }`}
-              onClick={() => handleTimeSelect(t)}
-            >
-              {t} c
-            </button>
-          ))}
-        </div>
+        <TimerSelector selectedTime={selectedTime} onSelect={handleTimeSelect} />
       )}
 
       <div className="text-2xl font-bold text-[#0A335C] mb-3">
         Час: {timeLeft} с
       </div>
 
-      <div
-        className="w-[90%] h-[74px] text-[41px] pl-4 pr-4 bg-white shadow-md rounded-2xl border border-gray-300 mb-4 text-lg leading-relaxed outline-none cursor-text overflow-y-auto whitespace-pre-wrap break-words custom-scroll"
-        tabIndex={0}
-        onKeyDown={handleKeyDown}
-        ref={textRef}
-      >
-        {renderText()}
-      </div>
+   <TypingArea
+  text={text}
+  typedIndex={typedIndex}
+  hasError={hasError}
+  onKeyDown={handleKeyDown}
+  ref={textRef}
+/>
 
-      {!isActive && !isFinished && (
-        <button
-          className="bg-[#0A335C] text-white px-6 py-2 rounded-xl text-lg font-semibold hover:bg-[#0a447d] cursor-pointer shadow-md"
-          onClick={startTest}
-        >
-          Старт
-        </button>
-      )}
+      {!isActive && !isFinished && <StartButton onClick={startTest} />}
 
       {isFinished && (
-        <div className="mt-4 text-xl font-bold text-[#0A335C] flex flex-col items-center">
-          <div className="mb-4 flex items-center gap-16">
-            <p>
-              Швидкість: <span className="text-green-600">{cpm}</span> зн./хв
-            </p>
-            <p>
-              Помилок: <span className="text-red-600">{mistakes}</span>
-            </p>
-            <p>
-              Точність: <span className="text-blue-600">{accuracy}%</span>
-            </p>
-          </div>
-          <button
-            className="mt-4 bg-[#0A335C] text-white px-6 py-2 rounded-xl hover:bg-[#0a447d]"
-            onClick={restartTest}
-          >
-            Пройти ще раз
-          </button>
-        </div>
+        <Results
+          cpm={cpm}
+          accuracy={accuracy}
+          mistakes={mistakes}
+          onRestart={restartTest}
+        />
       )}
 
       <RegisterModal show={showModal} onClose={() => setShowModal(false)} />

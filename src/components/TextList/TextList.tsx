@@ -37,9 +37,9 @@ const fetchText = async () => {
   }
 };
 
-  useEffect(() => {
-    fetchText();
-  }, []);
+useEffect(() => {
+  fetchText();
+}, [selectedLanguage]);
 
   useEffect(() => {
     if (isActive && timeLeft > 0) {
@@ -157,15 +157,14 @@ const fetchText = async () => {
       </h2>
 
      <div className="w-full flex justify-evenly items-center mb-4 px-4">
-  <LanguageSelector
-    selectedLanguage={selectedLanguage}
-    onSelect={(lang) => {
+ <LanguageSelector
+  selectedLanguage={selectedLanguage}
+  onSelect={(lang) => {
+    if (!isActive && !isFinished) {
       setSelectedLanguage(lang);
-      if (!isActive && !isFinished) {
-        fetchText();
-      }
-    }}
-  />
+    }
+  }}
+/>
 
   <TimerSelector
     selectedTime={selectedTime}

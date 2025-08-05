@@ -5,6 +5,7 @@ import TimerSelector from "./TimerSelector";
 import TypingArea from "./TypingArea";
 import Results from "./Results";
 import StartButton from "./StartButton";
+import LanguageSelector from "./LanguageSelector";
 import RegisterModal from "../RegisterModal/RegisterModal";
 
 export default function TypingTest() {
@@ -20,19 +21,21 @@ export default function TypingTest() {
   const [hasError, setHasError] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const textRef = useRef<HTMLDivElement | null>(null);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>("uk");
+
   
 
-  const fetchText = async () => {
-    try {
-      const res = await axios.get<{ text: string }>(
-        "http://localhost:3000/api/random-text"
-      );
-      setText(res.data.text);
-    } catch (err) {
-      console.error(err);
-      setText("Помилка завантаження тексту.");
-    }
-  };
+const fetchText = async () => {
+  try {
+    const res = await axios.get<{ text: string }>(
+      `http://localhost:3000/api/random-text?lang=${selectedLanguage}`
+    );
+    setText(res.data.text);
+  } catch (err) {
+    console.error(err);
+    setText("Помилка завантаження тексту.");
+  }
+};
 
   useEffect(() => {
     fetchText();
@@ -153,9 +156,28 @@ export default function TypingTest() {
         Тест швидкості друку
       </h2>
 
-      {!isActive && !isFinished && (
-        <TimerSelector selectedTime={selectedTime} onSelect={handleTimeSelect} />
-      )}
+     <div className="w-full flex justify-evenly items-center mb-4 px-4">
+  <LanguageSelector
+    selectedLanguage={selectedLanguage}
+    onSelect={(lang) => {
+      setSelectedLanguage(lang);
+      if (!isActive && !isFinished) {
+        fetchText();
+      }
+    }}
+  />
+
+  <TimerSelector
+    selectedTime={selectedTime}
+    onSelect={(time) => {
+      setSelectedTime(time);
+      if (!isActive && !isFinished) {
+        setTimeLeft(time);
+      }
+    }}
+  />
+</div>
+
 
       <div className="text-2xl font-bold text-[#0A335C] mb-3">
         Час: {timeLeft} с

@@ -20,7 +20,6 @@ export default function Header() {
     }
   }, [])
 
-  // Закриття меню при кліку поза ним
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {

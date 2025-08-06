@@ -51,7 +51,7 @@ export default function AccountSettingsModal({ isOpen, onClose }: Props) {
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-6">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-4">
             <div>
               <label className="text-sm font-medium text-gray-600 dark:text-gray-300">Ім’я</label>
               <input
@@ -64,17 +64,7 @@ export default function AccountSettingsModal({ isOpen, onClose }: Props) {
               />
             </div>
 
-            <div>
-              <label className="text-sm font-medium text-gray-600 dark:text-gray-300">Прізвище</label>
-              <input
-                type="text"
-                name="lastName"
-                value={formData.lastName}
-                onChange={handleChange}
-                className="mt-1 w-full px-4 py-2 rounded-xl bg-gray-100 dark:bg-zinc-800 dark:text-white border border-gray-300 dark:border-zinc-700"
-                required
-              />
-            </div>
+            
           </div>
 
           <div>

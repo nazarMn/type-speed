@@ -1,10 +1,12 @@
 import React, { useEffect, useState, useRef } from 'react'
 import axios from 'axios'
+import AccountSettingsModal from '../AccountSettingsModal/AccountSettingsModal'
 
 export default function Header() {
   const [user, setUser] = useState<{ username: string } | null>(null)
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement | null>(null)
+   const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -73,7 +75,7 @@ export default function Header() {
                 </p>
                 <button
                   className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
-                  onClick={() => alert('Перейти в налаштування')}
+                    onClick={() => setIsModalOpen(true)}
                 >
                   <i className="fa-solid fa-gear mr-2"></i> Налаштування
                 </button>
@@ -101,6 +103,8 @@ export default function Header() {
           </>
         )}
       </div>
+       <AccountSettingsModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </header>
+    
   )
 }

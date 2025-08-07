@@ -1,24 +1,12 @@
-import React, { useEffect, useState, useRef } from 'react'
-import axios from 'axios'
+import { useContext, useRef, useEffect, useState } from 'react'
+import { AuthContext } from '../context/AuthContext/AuthContext'
 import AccountSettingsModal from '../AccountSettingsModal/AccountSettingsModal'
 
 export default function Header() {
-  const [user, setUser] = useState<{ username: string } | null>(null)
+  const { user, logout } = useContext(AuthContext)
   const [menuOpen, setMenuOpen] = useState(false)
   const menuRef = useRef<HTMLDivElement | null>(null)
-   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  useEffect(() => {
-    const token = localStorage.getItem('token')
-    if (token) {
-      axios
-        .get('http://localhost:3000/api/me', {
-          headers: { Authorization: `Bearer ${token}` }
-        })
-        .then((res) => setUser(res.data))
-        .catch(() => setUser(null))
-    }
-  }, [])
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
@@ -29,12 +17,6 @@ export default function Header() {
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
-
-  const handleLogout = () => {
-    localStorage.removeItem('token')
-    setUser(null)
-    window.location.href = '/'
-  }
 
   return (
     <header className="w-full h-[50px]  flex items-center justify-between px-10">
@@ -74,13 +56,13 @@ export default function Header() {
                 </p>
                 <button
                   className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
-                    onClick={() => setIsModalOpen(true)}
+                  onClick={() => setIsModalOpen(true)}
                 >
                   <i className="fa-solid fa-gear mr-2"></i> Налаштування
                 </button>
                 <button
                   className="w-full text-left px-4 py-2 text-gray-700 hover:bg-gray-100 cursor-pointer"
-                  onClick={handleLogout}
+                  onClick={logout}
                 >
                   <i className="fa-solid fa-right-from-bracket mr-2"></i> Вийти
                 </button>
@@ -102,8 +84,8 @@ export default function Header() {
           </>
         )}
       </div>
-       <AccountSettingsModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
+
+      <AccountSettingsModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />
     </header>
-    
   )
 }

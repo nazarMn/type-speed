@@ -1,10 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { AuthContext } from '../context/AuthContext/AuthContext'
 import axios from 'axios'
 
 interface LoginResponse {
   token: string
+  user: {
+    username: string
+    email: string
+    // додавай інші поля, якщо потрібно
+  }
   message?: string
 }
 
@@ -17,6 +23,7 @@ export default function Registration() {
   const [error, setError] = useState<string>('')
   const [showRemind, setShowRemind] = useState<boolean>(false)
   const navigate = useNavigate()
+  const { login } = useContext(AuthContext)
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -39,8 +46,10 @@ export default function Registration() {
           username,
           password
         })
+
         alert(res.data.message || 'Реєстрація успішна!')
         localStorage.setItem('token', res.data.token)
+        login(res.data.token, res.data.user)
         navigate('/')
       } catch (err: any) {
         setError(err.response?.data?.message || 'Помилка при реєстрації')
@@ -51,7 +60,9 @@ export default function Registration() {
           email,
           password
         })
+
         localStorage.setItem('token', res.data.token)
+        login(res.data.token, res.data.user)
         navigate('/')
       } catch (err: any) {
         const msg = err.response?.data?.message
@@ -137,14 +148,13 @@ export default function Registration() {
               type="button"
               className="w-full py-2 bg-red-100 text-red-700 rounded-lg font-semibold mt-2 hover:bg-red-200 transition-all cursor-pointer"
               onClick={async () => {
-  try {
-    await axios.post('http://localhost:3000/api/magic-link', { email });
-    alert('Magic link надіслано на пошту');
-  } catch (err: any) {
-    alert(err.response?.data?.message || 'Помилка при надсиланні посилання');
-  }
-}}
-
+                try {
+                  await axios.post('http://localhost:3000/api/magic-link', { email })
+                  alert('Magic link надіслано на пошту')
+                } catch (err: any) {
+                  alert(err.response?.data?.message || 'Помилка при надсиланні посилання')
+                }
+              }}
             >
               Нагадати пароль
             </button>

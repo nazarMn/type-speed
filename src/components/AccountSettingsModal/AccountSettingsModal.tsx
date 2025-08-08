@@ -103,10 +103,33 @@ const changePassword = async () => {
     setIsResetMode(false);
     setConfirmationCode('');
     setNewPassword('');
+
+    await fetchDecryptedPassword();
   } catch (e: any) {
     setResetError(e.response?.data?.message || 'Помилка при зміні пароля');
   }
 };
+
+
+
+const fetchDecryptedPassword = async () => {
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    const res = await axios.get("http://localhost:3000/api/me", {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    setFormData((prev) => ({
+      ...prev,
+      password: res.data.password || "",
+    }));
+  } catch (err) {
+    console.error("Помилка оновлення пароля:", err);
+  }
+};
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
       <div className="bg-white dark:bg-zinc-900 w-full max-w-xl p-6 rounded-2xl shadow-xl relative animate-fade-in overflow-y-auto max-h-[90vh]">

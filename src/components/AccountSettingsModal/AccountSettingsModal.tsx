@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { AuthContext } from '../context/AuthContext/AuthContext';
 
 interface Props {
@@ -97,11 +99,10 @@ export default function AccountSettingsModal({ isOpen, onClose }: Props) {
         }
       );
 
-      alert("✅ Ім'я успішно збережено!");
+      toast.success("Дані успішно збережено!");
       updateUser({ username: formData.username });
-      onClose();
     } catch (error: any) {
-      alert(error.response?.data?.message || "Помилка при збереженні імені");
+      toast.error(error.response?.data?.message || "Помилка при збереженні імені");
     }
   };
 
@@ -111,45 +112,49 @@ export default function AccountSettingsModal({ isOpen, onClose }: Props) {
 
 
 const sendResetCode = async () => {
-  setResetError(null);
-  setResetSuccess(null);
-  setSendingCode(true);
-  setIsResetMode(true);
-  try {
-    await axios.post('http://localhost:3000/api/send-reset-code', { email: formData.email });
-    setCodeSent(true); 
-    setResetSuccess('Код підтвердження відправлено на email');
-  } catch (e: any) {
-    setResetError(e.response?.data?.message || 'Помилка при відправці коду');
-  } finally {
-    setSendingCode(false);
-  }
-};
+    setResetError(null);
+    setResetSuccess(null);
+    setSendingCode(true);
+    setIsResetMode(true);
+    try {
+      await axios.post('http://localhost:3000/api/send-reset-code', { email: formData.email });
+      setCodeSent(true); 
+      setResetSuccess('Код підтвердження відправлено на email');
+      toast.success('Код підтвердження відправлено на email');
+    } catch (e: any) {
+      setResetError(e.response?.data?.message || 'Помилка при відправці коду');
+      toast.error(e.response?.data?.message || 'Помилка при відправці коду');
+    } finally {
+      setSendingCode(false);
+    }
+  };
 
+  const changePassword = async () => {
+    setResetError(null);
+    setResetSuccess(null);
+    if (!confirmationCode || !newPassword) {
+      setResetError('Будь ласка, введіть код та новий пароль');
+      toast.error('Будь ласка, введіть код та новий пароль');
+      return;
+    }
+    try {
+      await axios.post('http://localhost:3000/api/reset-password', {
+        email: formData.email,
+        code: confirmationCode,
+        newPassword
+      });
+      setResetSuccess('Пароль успішно змінено!');
+      toast.success('Пароль успішно змінено!');
+      setIsResetMode(false);
+      setConfirmationCode('');
+      setNewPassword('');
 
-const changePassword = async () => {
-  setResetError(null);
-  setResetSuccess(null);
-  if (!confirmationCode || !newPassword) {
-    setResetError('Будь ласка, введіть код та новий пароль');
-    return;
-  }
-  try {
-    await axios.post('http://localhost:3000/api/reset-password', {
-      email: formData.email,
-      code: confirmationCode,
-      newPassword
-    });
-    setResetSuccess('Пароль успішно змінено!');
-    setIsResetMode(false);
-    setConfirmationCode('');
-    setNewPassword('');
-
-    await fetchDecryptedPassword();
-  } catch (e: any) {
-    setResetError(e.response?.data?.message || 'Помилка при зміні пароля');
-  }
-};
+      await fetchDecryptedPassword();
+    } catch (e: any) {
+      setResetError(e.response?.data?.message || 'Помилка при зміні пароля');
+      toast.error(e.response?.data?.message || 'Помилка при зміні пароля');
+    }
+  };
 
 
 
@@ -173,7 +178,9 @@ const fetchDecryptedPassword = async () => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
+              
       <div className="bg-white dark:bg-zinc-900 w-full max-w-xl p-6 rounded-2xl shadow-xl relative animate-fade-in overflow-y-auto max-h-[90vh]">
+  <ToastContainer position="top-right" autoClose={3000} />
         <button
           onClick={onClose}
           className="absolute top-4 right-4 text-xl text-gray-500 hover:text-red-500 transition"

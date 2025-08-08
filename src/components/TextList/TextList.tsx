@@ -57,12 +57,12 @@ useEffect(() => {
     }
   }, [text]);
 
-  const handleTimeSelect = (t: number) => {
-    setSelectedTime(t);
-    if (!isActive && !isFinished) {
-      setTimeLeft(t);
-    }
-  };
+  // const handleTimeSelect = (t: number) => {
+  //   setSelectedTime(t);
+  //   if (!isActive && !isFinished) {
+  //     setTimeLeft(t);
+  //   }
+  // };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (isFinished || !text) return;

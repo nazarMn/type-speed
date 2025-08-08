@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import type { FormEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext/AuthContext'
@@ -9,7 +9,6 @@ interface LoginResponse {
   user: {
     username: string
     email: string
-    // додавай інші поля, якщо потрібно
   }
   message?: string
 }

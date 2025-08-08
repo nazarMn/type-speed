@@ -23,7 +23,6 @@ export const MyStats: React.FC = () => {
   }
 
   const {
-    username,
     averageCPM,
     averageAccuracy,
     averageErrors,

@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useEffect, useRef } from "react";
 
 interface TypingAreaProps {
   text: string;
@@ -9,6 +9,22 @@ interface TypingAreaProps {
 
 const TypingArea = forwardRef<HTMLDivElement, TypingAreaProps>(
   ({ text, typedIndex, hasError, onKeyDown }, ref) => {
+    const charRefs = useRef<(HTMLSpanElement | null)[]>([]);
+
+    useEffect(() => {
+      // Прокрутка до поточного символу
+      if (typedIndex < charRefs.current.length) {
+        const currentCharElement = charRefs.current[typedIndex];
+        if (currentCharElement) {
+          currentCharElement.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+            inline: "nearest",
+          });
+        }
+      }
+    }, [typedIndex]);
+
     const renderText = () =>
       text.split("").map((char, i) => {
         let className = "";
@@ -20,7 +36,11 @@ const TypingArea = forwardRef<HTMLDivElement, TypingAreaProps>(
         }
 
         return (
-          <span key={i} className={className}>
+          <span
+            key={i}
+            className={className}
+            ref={(el) => { charRefs.current[i] = el; }}
+          >
             {char}
           </span>
         );

@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
+import { useContext } from 'react'
+import { AuthContext } from '../context/AuthContext/AuthContext'
+
 
 interface Props {
   isOpen: boolean;
@@ -24,6 +27,7 @@ export default function AccountSettingsModal({ isOpen, onClose }: Props) {
 const [codeSent, setCodeSent] = useState(false);
 const [resetError, setResetError] = useState<string | null>(null);
 const [resetSuccess, setResetSuccess] = useState<string | null>(null);
+const { updateUser } = useContext(AuthContext)
 
 useEffect(() => {
   if (isOpen) {
@@ -77,6 +81,7 @@ const handleSubmit = async (e: React.FormEvent) => {
     );
 
     alert("✅ Ім'я успішно збережено!");
+    updateUser({ username: formData.username })
     onClose();
   } catch (error: any) {
     alert(error.response?.data?.message || "Помилка при збереженні імені");

@@ -1,21 +1,22 @@
-// src/context/AuthContext.tsx
 import { createContext, useState, useEffect } from 'react'
 import axios from 'axios'
 
 interface AuthContextType {
-  user: any
-  login: (token: string, userData: any) => void
+  user: Record<string, any> | null
+  login: (token: string, userData: Record<string, any>) => void
   logout: () => void
+  updateUser: (newData: Partial<Record<string, any>>) => void 
 }
 
 export const AuthContext = createContext<AuthContextType>({
   user: null,
   login: () => {},
   logout: () => {},
+  updateUser: () => {},
 })
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
-  const [user, setUser] = useState(null)
+  const [user, setUser] = useState<Record<string, any> | null>(null)
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -29,7 +30,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, [])
 
-  const login = (token: string, userData: any) => {
+  const login = (token: string, userData: Record<string, any>) => {
     localStorage.setItem('token', token)
     setUser(userData)
   }
@@ -39,8 +40,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setUser(null)
   }
 
+  const updateUser = (newData: Partial<Record<string, any>>) => {
+    setUser((prev) => prev ? { ...prev, ...newData } : prev)
+  }
+
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, updateUser }}>
       {children}
     </AuthContext.Provider>
   )

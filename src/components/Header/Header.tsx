@@ -37,7 +37,7 @@ export default function Header() {
       <a href="/leaderboard">Лідери</a>  
         </h2>
         <h2 className="text-2xl font-bold cursor-pointer hover:text-[#1a4f8a] transition">
-          Історія
+         <a href="/my-stats">Історія</a> 
         </h2>
       </nav>
 

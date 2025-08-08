@@ -31,10 +31,10 @@ export default function Header() {
 
       <nav className="flex items-center gap-18">
         <h2 className="text-2xl font-bold cursor-pointer hover:text-[#1a4f8a] transition">
-          Тестування
+         <a href="/"> Тестування</a>
         </h2>
         <h2 className="text-2xl font-bold cursor-pointer hover:text-[#1a4f8a] transition">
-          Лідери
+      <a href="/leaderboard">Лідери</a>  
         </h2>
         <h2 className="text-2xl font-bold cursor-pointer hover:text-[#1a4f8a] transition">
           Історія

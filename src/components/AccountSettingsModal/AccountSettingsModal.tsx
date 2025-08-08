@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import axios from "axios";
-import { useContext } from 'react'
-import { AuthContext } from '../context/AuthContext/AuthContext'
-
+import { AuthContext } from '../context/AuthContext/AuthContext';
 
 interface Props {
   isOpen: boolean;
@@ -24,36 +22,44 @@ export default function AccountSettingsModal({ isOpen, onClose }: Props) {
   const [confirmationCode, setConfirmationCode] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [sendingCode, setSendingCode] = useState(false);
-const [codeSent, setCodeSent] = useState(false);
-const [resetError, setResetError] = useState<string | null>(null);
-const [resetSuccess, setResetSuccess] = useState<string | null>(null);
-const { updateUser } = useContext(AuthContext)
+  const [codeSent, setCodeSent] = useState(false);
+  const [resetError, setResetError] = useState<string | null>(null);
+  const [resetSuccess, setResetSuccess] = useState<string | null>(null);
+  const { updateUser } = useContext(AuthContext);
 
-useEffect(() => {
-  if (isOpen) {
-    const token = localStorage.getItem("token");
-    if (!token) return;
+  useEffect(() => {
+    if (isOpen) {
+      const storedLanguage = localStorage.getItem("language");
+      const storedTheme = localStorage.getItem("theme");
 
-    axios
-      .get("http://localhost:3000/api/me", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((res) => {
-        setFormData((prev) => ({
-          ...prev,
-          username: res.data.username || "",
-          email: res.data.email || "",
-          password: res.data.password || "" 
-        }));
-      })
-      .catch((err) => {
-        console.error("Помилка завантаження даних користувача:", err);
-      });
-  }
-}, [isOpen]);
+      setFormData(prev => ({
+        ...prev,
+        language: storedLanguage || prev.language,
+        theme: storedTheme || prev.theme,
+      }));
 
+      const token = localStorage.getItem("token");
+      if (!token) return;
+
+      axios
+        .get("http://localhost:3000/api/me", {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        })
+        .then((res) => {
+          setFormData((prev) => ({
+            ...prev,
+            username: res.data.username || "",
+            email: res.data.email || "",
+            password: res.data.password || "",
+          }));
+        })
+        .catch((err) => {
+          console.error("Помилка завантаження даних користувача:", err);
+        });
+    }
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -61,32 +67,44 @@ useEffect(() => {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => {
+      const newData = { ...prev, [name]: value };
+
+      if (name === "language") {
+        localStorage.setItem("language", value);
+      }
+      if (name === "theme") {
+        localStorage.setItem("theme", value);
+      }
+
+      return newData;
+    });
   };
 
-const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  try {
-    const token = localStorage.getItem("token");
-    if (!token) throw new Error("Нема токена авторизації");
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("Нема токена авторизації");
 
-    await axios.patch(
-      "http://localhost:3000/api/me",
-      {
-        username: formData.username,
-      },
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
+      await axios.patch(
+        "http://localhost:3000/api/me",
+        {
+          username: formData.username,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
 
-    alert("✅ Ім'я успішно збережено!");
-    updateUser({ username: formData.username })
-    onClose();
-  } catch (error: any) {
-    alert(error.response?.data?.message || "Помилка при збереженні імені");
-  }
-};
+      alert("✅ Ім'я успішно збережено!");
+      updateUser({ username: formData.username });
+      onClose();
+    } catch (error: any) {
+      alert(error.response?.data?.message || "Помилка при збереженні імені");
+    }
+  };
+
 
 
 
@@ -295,7 +313,7 @@ const fetchDecryptedPassword = async () => {
 
 
           <div className="grid grid-cols-2 gap-4">
-            <div>
+           <div>
               <label className="text-sm font-medium text-gray-600 dark:text-gray-300">Мова</label>
               <select
                 name="language"

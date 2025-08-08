@@ -124,17 +124,33 @@ useEffect(() => {
     if (textRef.current) textRef.current.focus();
   };
 
-  const finishTest = () => {
-    setIsActive(false);
-    setIsFinished(true);
+const finishTest = async () => {
+  setIsActive(false);
+  setIsFinished(true);
 
-    const token = localStorage.getItem("token");
-    if (!token) {
-      setShowModal(true);
-    } else {
-      setShowModal(false);
+  const token = localStorage.getItem("token");
+  if (!token) {
+    setShowModal(true);
+  } else {
+    setShowModal(false);
+    try {
+      await axios.post(
+        "http://localhost:3000/api/me/test-result",
+        {
+          cpm,
+          accuracy,
+          errors: mistakes,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+    } catch (error) {
+      console.error("Помилка при збереженні результату:", error);
     }
-  };
+  }
+};
+
 
   const restartTest = async () => {
     await fetchText();

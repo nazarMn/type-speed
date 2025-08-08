@@ -3,6 +3,7 @@ import TextList from './components/TextList/TextList'
 import Header from './components/Header/Header'
 import Registration from './components/Registration/Registration'
 import MagicLogin from './components/Registration/MagicLogin'
+import { MyStats } from './components/MyStats/MyStats'
 import { Leaderboard } from './components/LeaderBoard/LeaderBoard'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 
@@ -23,6 +24,12 @@ function App() {
           <Route path="/leaderboard" element={ <div className="w-full h-full pt-[20px]">
                 <Header />
                 <Leaderboard />
+              </div>} />
+
+          <Route path="/my-stats" element={
+          <div className="w-full h-full pt-[20px]">
+                <Header />
+                <MyStats />
               </div>} />
           <Route path="/registration" element={<Registration />} />
 

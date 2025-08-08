@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import axios from "axios";
 
 interface Props {
   isOpen: boolean;
@@ -8,8 +9,7 @@ interface Props {
 
 export default function AccountSettingsModal({ isOpen, onClose }: Props) {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    username: "",
     email: "",
     password: "",
     language: "uk",
@@ -20,6 +20,32 @@ export default function AccountSettingsModal({ isOpen, onClose }: Props) {
   const [isResetMode, setIsResetMode] = useState(false);
   const [confirmationCode, setConfirmationCode] = useState("");
   const [newPassword, setNewPassword] = useState("");
+
+useEffect(() => {
+  if (isOpen) {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+
+    axios
+      .get("http://localhost:3000/api/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        setFormData((prev) => ({
+          ...prev,
+          username: res.data.username || "",
+          email: res.data.email || "",
+          password: res.data.password || "" // отримуємо реальний пароль
+        }));
+      })
+      .catch((err) => {
+        console.error("Помилка завантаження даних користувача:", err);
+      });
+  }
+}, [isOpen]);
+
 
   if (!isOpen) return null;
 
@@ -35,7 +61,6 @@ export default function AccountSettingsModal({ isOpen, onClose }: Props) {
     onClose();
     alert("✅ Налаштування збережено!");
   };
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
       <div className="bg-white dark:bg-zinc-900 w-full max-w-xl p-6 rounded-2xl shadow-xl relative animate-fade-in overflow-y-auto max-h-[90vh]">
@@ -56,8 +81,8 @@ export default function AccountSettingsModal({ isOpen, onClose }: Props) {
               <label className="text-sm font-medium text-gray-600 dark:text-gray-300">Ім’я</label>
               <input
                 type="text"
-                name="firstName"
-                value={formData.firstName}
+                name="username"
+                value={formData.username}
                 onChange={handleChange}
                 className="mt-1 w-full px-4 py-2 rounded-xl bg-gray-100 dark:bg-zinc-800 dark:text-white border border-gray-300 dark:border-zinc-700"
                 required

@@ -20,6 +20,10 @@ export default function AccountSettingsModal({ isOpen, onClose }: Props) {
   const [isResetMode, setIsResetMode] = useState(false);
   const [confirmationCode, setConfirmationCode] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [sendingCode, setSendingCode] = useState(false);
+const [codeSent, setCodeSent] = useState(false);
+const [resetError, setResetError] = useState<string | null>(null);
+const [resetSuccess, setResetSuccess] = useState<string | null>(null);
 
 useEffect(() => {
   if (isOpen) {
@@ -61,6 +65,48 @@ useEffect(() => {
     onClose();
     alert("✅ Налаштування збережено!");
   };
+
+
+
+
+const sendResetCode = async () => {
+  setResetError(null);
+  setResetSuccess(null);
+  setSendingCode(true);
+  setIsResetMode(true);
+  try {
+    await axios.post('http://localhost:3000/api/send-reset-code', { email: formData.email });
+    setCodeSent(true); 
+    setResetSuccess('Код підтвердження відправлено на email');
+  } catch (e: any) {
+    setResetError(e.response?.data?.message || 'Помилка при відправці коду');
+  } finally {
+    setSendingCode(false);
+  }
+};
+
+
+const changePassword = async () => {
+  setResetError(null);
+  setResetSuccess(null);
+  if (!confirmationCode || !newPassword) {
+    setResetError('Будь ласка, введіть код та новий пароль');
+    return;
+  }
+  try {
+    await axios.post('http://localhost:3000/api/reset-password', {
+      email: formData.email,
+      code: confirmationCode,
+      newPassword
+    });
+    setResetSuccess('Пароль успішно змінено!');
+    setIsResetMode(false);
+    setConfirmationCode('');
+    setNewPassword('');
+  } catch (e: any) {
+    setResetError(e.response?.data?.message || 'Помилка при зміні пароля');
+  }
+};
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm px-4">
       <div className="bg-white dark:bg-zinc-900 w-full max-w-xl p-6 rounded-2xl shadow-xl relative animate-fade-in overflow-y-auto max-h-[90vh]">
@@ -125,60 +171,82 @@ useEffect(() => {
 
 
           <div className="bg-gray-50 dark:bg-zinc-800 border border-gray-200 dark:border-zinc-700 p-4 rounded-xl">
-            {!isResetMode ? (
-              <button
-                type="button"
-                onClick={() => setIsResetMode(true)}
-                className="text-sm text-blue-600 hover:underline"
-              >
-                🔐 Змінити пароль
-              </button>
-            ) : (
-              <>
-                <h3 className="text-sm font-semibold mb-3 text-gray-700 dark:text-gray-300">
-                  🔑 Зміна пароля (через email)
-                </h3>
+{!isResetMode ? (
+  <button
+    type="button"
+    onClick={sendResetCode}
+    disabled={sendingCode}
+    className="text-sm text-blue-600 hover:underline disabled:opacity-50"
+  >
+    🔐 Змінити пароль
+  </button>
+) : (
+    <>
+      <h3 className="text-sm font-semibold mb-3 text-gray-700 dark:text-gray-300">
+        🔑 Зміна пароля (через email)
+      </h3>
 
-                <div className="space-y-3">
-                  <input
-                    type="text"
-                    placeholder="Код підтвердження"
-                    value={confirmationCode}
-                    onChange={(e) => setConfirmationCode(e.target.value)}
-                    className="w-full px-4 py-2 rounded-xl bg-white dark:bg-zinc-700 dark:text-white border border-gray-300 dark:border-zinc-600"
-                  />
-                  <input
-                    type="password"
-                    placeholder="Новий пароль"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    className="w-full px-4 py-2 rounded-xl bg-white dark:bg-zinc-700 dark:text-white border border-gray-300 dark:border-zinc-600"
-                  />
-                  <div className="flex justify-between gap-2">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        alert("✅ Пароль змінено (симуляція)");
-                        setIsResetMode(false);
-                        setConfirmationCode("");
-                        setNewPassword("");
-                      }}
-                      className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-xl transition"
-                    >
-                      ✅ Змінити пароль
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setIsResetMode(false)}
-                      className="w-full border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-2 rounded-xl hover:bg-gray-100 dark:hover:bg-zinc-700 transition"
-                    >
-                      Скасувати
-                    </button>
-                  </div>
-                </div>
-              </>
-            )}
+      {resetError && (
+        <p className="text-red-600 mb-2">{resetError}</p>
+      )}
+      {resetSuccess && (
+        <p className="text-green-600 mb-2">{resetSuccess}</p>
+      )}
+
+      {!codeSent ? (
+        <button
+          type="button"
+          onClick={sendResetCode}
+          disabled={sendingCode}
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-xl transition"
+        >
+          {sendingCode ? 'Відправляємо код...' : 'Відправити код підтвердження'}
+        </button>
+      ) : (
+        <>
+          <input
+            type="text"
+            placeholder="Код підтвердження"
+            value={confirmationCode}
+            onChange={(e) => setConfirmationCode(e.target.value)}
+            className="w-full px-4 py-2 rounded-xl bg-white dark:bg-zinc-700 dark:text-white border border-gray-300 dark:border-zinc-600 mb-2"
+          />
+          <input
+            type="password"
+            placeholder="Новий пароль"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+            className="w-full px-4 py-2 rounded-xl bg-white dark:bg-zinc-700 dark:text-white border border-gray-300 dark:border-zinc-600 mb-4"
+          />
+          <div className="flex justify-between gap-2">
+            <button
+              type="button"
+              onClick={changePassword}
+              className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-xl transition"
+            >
+              ✅ Змінити пароль
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setIsResetMode(false);
+                setConfirmationCode('');
+                setNewPassword('');
+                setResetError(null);
+                setResetSuccess(null);
+                setCodeSent(false);
+              }}
+              className="w-full border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-2 rounded-xl hover:bg-gray-100 dark:hover:bg-zinc-700 transition"
+            >
+              Скасувати
+            </button>
           </div>
+        </>
+      )}
+    </>
+  )}
+</div>
+
 
           <div className="grid grid-cols-2 gap-4">
             <div>

@@ -128,6 +128,24 @@ const finishTest = async () => {
   setIsActive(false);
   setIsFinished(true);
 
+  const elapsedSeconds = selectedTime - timeLeft;
+  const elapsedMinutes = elapsedSeconds > 0 ? elapsedSeconds / 60 : 1 / 60;
+
+  const correctChars = Math.max(0, typedIndex - mistakes);
+  const totalTyped = Math.max(typedIndex, 1); 
+
+  const finalCpm = Math.max(0, Math.round(correctChars / elapsedMinutes));
+  const finalAccuracy = Math.max(
+    0,
+    Math.min(100, Math.round((correctChars / totalTyped) * 100))
+  );
+
+  const finalErrors = Math.max(0, mistakes);
+
+  setCpm(finalCpm);
+  setAccuracy(finalAccuracy);
+  setMistakes(finalErrors);
+
   const token = localStorage.getItem("token");
   if (!token) {
     setShowModal(true);
@@ -137,9 +155,9 @@ const finishTest = async () => {
       await axios.post(
         "http://localhost:3000/api/me/test-result",
         {
-          cpm,
-          accuracy,
-          errors: mistakes,
+          cpm: finalCpm,
+          accuracy: finalAccuracy,
+          errors: finalErrors,
         },
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -150,6 +168,8 @@ const finishTest = async () => {
     }
   }
 };
+
+
 
 
   const restartTest = async () => {

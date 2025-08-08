@@ -60,11 +60,29 @@ useEffect(() => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+  try {
+    const token = localStorage.getItem("token");
+    if (!token) throw new Error("Нема токена авторизації");
+
+    await axios.patch(
+      "http://localhost:3000/api/me",
+      {
+        username: formData.username,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    alert("✅ Ім'я успішно збережено!");
     onClose();
-    alert("✅ Налаштування збережено!");
-  };
+  } catch (error: any) {
+    alert(error.response?.data?.message || "Помилка при збереженні імені");
+  }
+};
+
 
 
 

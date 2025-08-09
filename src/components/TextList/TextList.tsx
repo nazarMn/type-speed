@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import "./textList.css";
+import "./TextList.css";
 import TimerSelector from "./TimerSelector";
 import TypingArea from "./TypingArea";
 import Results from "./Results";

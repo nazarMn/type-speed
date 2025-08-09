@@ -13,7 +13,7 @@ export default function MagicLogin() {
     if (!token) return
 
     axios
-      .get('http://localhost:3000/api/me', {
+      .get('https://type-speed-server.onrender.com/api/me', {
         headers: {
           Authorization: `Bearer ${token}`,  // Тут має бути Authorization, не просто token
         },

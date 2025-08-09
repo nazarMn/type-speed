@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     const token = localStorage.getItem('token')
     if (token) {
       axios
-        .get('http://localhost:3000/api/me', {
+        .get('https://type-speed-server.onrender.com/api/me', {
           headers: { Authorization: `Bearer ${token}` },
         })
         .then((res) => setUser(res.data))

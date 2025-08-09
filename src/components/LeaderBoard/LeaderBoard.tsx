@@ -14,7 +14,7 @@ export const Leaderboard: React.FC = () => {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/leaders/today")
+      .get("https://type-speed-server.onrender.com/api/leaders/today")
       .then((res) => setLeaders(res.data))
       .catch((err) => console.error("Помилка завантаження лідерів:", err));
   }, []);

@@ -44,7 +44,7 @@ export default function AccountSettingsModal({ isOpen, onClose }: Props) {
       if (!token) return;
 
       axios
-        .get("http://localhost:3000/api/me", {
+        .get("https://type-speed-server.onrender.com/api/me", {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -90,7 +90,7 @@ export default function AccountSettingsModal({ isOpen, onClose }: Props) {
       if (!token) throw new Error("Нема токена авторизації");
 
       await axios.patch(
-        "http://localhost:3000/api/me",
+        "https://type-speed-server.onrender.com/api/me",
         {
           username: formData.username,
         },
@@ -117,7 +117,7 @@ const sendResetCode = async () => {
     setSendingCode(true);
     setIsResetMode(true);
     try {
-      await axios.post('http://localhost:3000/api/send-reset-code', { email: formData.email });
+      await axios.post('https://type-speed-server.onrender.com/api/send-reset-code', { email: formData.email });
       setCodeSent(true); 
       setResetSuccess('Код підтвердження відправлено на email');
       toast.success('Код підтвердження відправлено на email');
@@ -138,7 +138,7 @@ const sendResetCode = async () => {
       return;
     }
     try {
-      await axios.post('http://localhost:3000/api/reset-password', {
+      await axios.post('https://type-speed-server.onrender.com/api/reset-password', {
         email: formData.email,
         code: confirmationCode,
         newPassword
@@ -163,7 +163,7 @@ const fetchDecryptedPassword = async () => {
     const token = localStorage.getItem("token");
     if (!token) return;
 
-    const res = await axios.get("http://localhost:3000/api/me", {
+    const res = await axios.get("https://type-speed-server.onrender.com/api/me", {
       headers: { Authorization: `Bearer ${token}` },
     });
 

@@ -40,7 +40,7 @@ export default function Registration() {
       }
 
       try {
-        const res = await axios.post<LoginResponse>('http://localhost:3000/api/register', {
+        const res = await axios.post<LoginResponse>('https://type-speed-server.onrender.com/api/register', {
           email,
           username,
           password
@@ -55,7 +55,7 @@ export default function Registration() {
       }
     } else {
       try {
-        const res = await axios.post<LoginResponse>('http://localhost:3000/api/login', {
+        const res = await axios.post<LoginResponse>('https://type-speed-server.onrender.com/api/login', {
           email,
           password
         })
@@ -148,7 +148,7 @@ export default function Registration() {
               className="w-full py-2 bg-red-100 text-red-700 rounded-lg font-semibold mt-2 hover:bg-red-200 transition-all cursor-pointer"
               onClick={async () => {
                 try {
-                  await axios.post('http://localhost:3000/api/magic-link', { email })
+                  await axios.post('https://type-speed-server.onrender.com/api/magic-link', { email })
                   alert('Magic link надіслано на пошту')
                 } catch (err: any) {
                   alert(err.response?.data?.message || 'Помилка при надсиланні посилання')

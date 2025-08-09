@@ -28,7 +28,7 @@ export default function TypingTest() {
 const fetchText = async () => {
   try {
     const res = await axios.get<{ text: string }>(
-      `https://type-speed-server.onrender.com/api/random-text?lang=${selectedLanguage}`
+      `http://localhost:3000/api/random-text?lang=${selectedLanguage}`
     );
     setText(res.data.text);
   } catch (err) {
@@ -155,7 +155,7 @@ const finishTest = async () => {
     setShowModal(false);
     try {
       await axios.post(
-        "https://type-speed-server.onrender.com/api/me/test-result",
+        "http://localhost:3000/api/me/test-result",
         {
           cpm: finalCpm,
           accuracy: finalAccuracy,

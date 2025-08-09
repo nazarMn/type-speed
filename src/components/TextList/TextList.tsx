@@ -131,10 +131,12 @@ const finishTest = async () => {
   const elapsedSeconds = selectedTime - timeLeft;
   const elapsedMinutes = elapsedSeconds > 0 ? elapsedSeconds / 60 : 1 / 60;
 
-  const correctChars = Math.max(0, typedIndex - mistakes);
-  const totalTyped = Math.max(typedIndex, 1); 
+  const totalTyped = Math.max(typedIndex, 1);
 
-  const finalCpm = Math.max(0, Math.round(correctChars / elapsedMinutes));
+  const correctChars = Math.max(0, typedIndex - mistakes);
+
+  const finalCpm = Math.max(0, Math.round(totalTyped / elapsedMinutes));
+
   const finalAccuracy = Math.max(
     0,
     Math.min(100, Math.round((correctChars / totalTyped) * 100))
@@ -168,6 +170,7 @@ const finishTest = async () => {
     }
   }
 };
+
 
 
 

@@ -21,7 +21,7 @@ const LanguageSelector: React.FC<LanguageSelectorProps> = ({
         <button
           key={code}
           onClick={() => onSelect(code)}
-          className={`px-5 py-2 rounded-full transition-all duration-200 border-2 text-lg font-semibold
+          className={`px-5 py-2 rounded-full transition-all duration-200 border-2 text-lg font-semibold cursor-pointer
             ${
               selectedLanguage === code
                 ? "bg-[#0A335C] text-white border-[#0A335C] scale-110 shadow-md"

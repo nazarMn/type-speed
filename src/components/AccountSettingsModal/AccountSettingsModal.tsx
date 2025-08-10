@@ -293,7 +293,7 @@ const fetchDecryptedPassword = async () => {
             <button
               type="button"
               onClick={changePassword}
-              className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-xl transition"
+              className="w-full bg-green-600 hover:bg-green-700 text-white py-2 rounded-xl transition cursor-pointer"
             >
               ✅ Змінити пароль
             </button>
@@ -307,7 +307,7 @@ const fetchDecryptedPassword = async () => {
                 setResetSuccess(null);
                 setCodeSent(false);
               }}
-              className="w-full border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-2 rounded-xl hover:bg-gray-100 dark:hover:bg-zinc-700 transition"
+              className="w-full border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 py-2 rounded-xl hover:bg-gray-100 dark:hover:bg-zinc-700 transition cursor-pointer"
             >
               Скасувати
             </button>
@@ -350,7 +350,7 @@ const fetchDecryptedPassword = async () => {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold text-lg transition mt-4"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-semibold text-lg transition mt-4 cursor-pointer"
           >
             💾 Зберегти
           </button>

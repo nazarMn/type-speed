@@ -183,7 +183,7 @@ const fetchDecryptedPassword = async () => {
   <ToastContainer position="top-right" autoClose={3000} />
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-xl text-gray-500 hover:text-red-500 transition"
+          className="absolute top-4 right-4 text-xl text-gray-500 hover:text-red-500 transition cursor-pointer"
         >
           ×
         </button>
@@ -247,7 +247,7 @@ const fetchDecryptedPassword = async () => {
     type="button"
     onClick={sendResetCode}
     disabled={sendingCode}
-    className="text-sm text-blue-600 hover:underline disabled:opacity-50"
+    className="text-sm text-blue-600 hover:underline disabled:opacity-50 cursor-pointer"
   >
     🔐 Змінити пароль
   </button>

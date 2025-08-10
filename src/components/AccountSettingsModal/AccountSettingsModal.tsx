@@ -232,7 +232,7 @@ const fetchDecryptedPassword = async () => {
     />
     <button
       type="button"
-      className="absolute right-3 top-2.5 text-gray-500 hover:text-blue-500"
+      className="absolute right-3 top-2.5 text-gray-500 hover:text-blue-500 cursor-pointer"
       onClick={() => setShowPassword((prev) => !prev)}
     >
       {showPassword ? <FaEyeSlash /> : <FaEye />}
@@ -326,11 +326,11 @@ const fetchDecryptedPassword = async () => {
                 name="language"
                 value={formData.language}
                 onChange={handleChange}
-                className="mt-1 w-full px-4 py-2 rounded-xl bg-gray-100 dark:bg-zinc-800 dark:text-white border border-gray-300 dark:border-zinc-700"
+                className="mt-1 w-full px-4 py-2 rounded-xl bg-gray-100 dark:bg-zinc-800 dark:text-white border border-gray-300 dark:border-zinc-700 cursor-pointer"
               >
-                <option value="uk">🇺🇦 Українська</option>
-                <option value="en">🇬🇧 English</option>
-                <option value="pl">🇵🇱 Polski</option>
+                <option value="uk" className="cursor-pointer">🇺🇦 Українська</option>
+                <option value="en" className="cursor-pointer">🇬🇧 English</option>
+                <option value="pl" className="cursor-pointer">🇵🇱 Polski</option>
               </select>
             </div>
 
@@ -340,10 +340,10 @@ const fetchDecryptedPassword = async () => {
                 name="theme"
                 value={formData.theme}
                 onChange={handleChange}
-                className="mt-1 w-full px-4 py-2 rounded-xl bg-gray-100 dark:bg-zinc-800 dark:text-white border border-gray-300 dark:border-zinc-700"
+                className="mt-1 w-full px-4 py-2 rounded-xl bg-gray-100 dark:bg-zinc-800 dark:text-white border border-gray-300 dark:border-zinc-700 cursor-pointer"
               >
-                <option value="light">🌞 Світла</option>
-                <option value="dark">🌙 Темна</option>
+                <option value="light" className="cursor-pointer">🌞 Світла</option>
+                <option value="dark" className="cursor-pointer">🌙 Темна</option>
               </select>
             </div>
           </div>

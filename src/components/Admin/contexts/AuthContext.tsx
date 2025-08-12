@@ -1,119 +1,123 @@
-import React, { createContext, useState, useEffect } from 'react';
-import type { ReactNode } from 'react';
+// import React, { createContext, useState, useEffect } from 'react';
+// import type { ReactNode } from 'react';
+// import axios from 'axios';
 
-interface User {
-  id: string;
-  email: string;
-  username: string;
-}
+// interface User {
+//   id: string;
+//   email: string;
+//   username: string;
+//   role?: string;
+// }
 
-interface AuthContextType {
-  user: User | null;
-  token: string | null;
-  login: (email: string, password: string) => Promise<void>;
-  logout: () => void;
-}
+// interface AuthContextType {
+//   user: User | null;
+//   token: string | null;
+//   adminUser: User | null;
+//   adminToken: string | null;
+//   login: (email: string, password: string) => Promise<void>;
+//   adminLogin: (email: string, password: string) => Promise<void>;
+//   logout: () => void;
+//   adminLogout: () => void;
+//   updateUser: (newData: Partial<User>) => void;
+// }
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+// export const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
+// export const AuthProvider = ({ children }: { children: ReactNode }) => {
+//   const [user, setUser] = useState<User | null>(null);
+//   const [token, setToken] = useState<string | null>(() => localStorage.getItem('token'));
 
-  useEffect(() => {
-    if (!token) {
-      setUser(null);
-      return;
-    }
+//   const [adminUser, setAdminUser] = useState<User | null>(null);
+//   const [adminToken, setAdminToken] = useState<string | null>(() => localStorage.getItem('adminToken'));
 
-    const fetchUser = async () => {
-      try {
-        const res = await fetch('http://localhost:3000/api/me', {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+//   // Завантаження даних користувача
+//   useEffect(() => {
+//     if (!token) {
+//       setUser(null);
+//       return;
+//     }
+//     axios
+//       .get('http://localhost:3000/api/me', {
+//         headers: { Authorization: `Bearer ${token}` },
+//       })
+//       .then((res) =>
+//         setUser({
+//           id: res.data.id || res.data._id || '',
+//           email: res.data.email,
+//           username: res.data.username,
+//           role: res.data.role,
+//         })
+//       )
+//       .catch(() => logout());
+//   }, [token]);
 
-        const text = await res.text();
+//   // Завантаження даних адміна
+//   useEffect(() => {
+//     if (!adminToken) {
+//       setAdminUser(null);
+//       return;
+//     }
+//     axios
+//       .get('http://localhost:3000/api/me', {
+//         headers: { Authorization: `Bearer ${adminToken}` },
+//       })
+//       .then((res) => {
+//         if (res.data.role !== 'admin') throw new Error('Відсутній доступ адміністратора');
+//         setAdminUser({
+//           id: res.data.id || res.data._id || '',
+//           email: res.data.email,
+//           username: res.data.username,
+//           role: res.data.role,
+//         });
+//       })
+//       .catch(() => adminLogout());
+//   }, [adminToken]);
 
-        if (!res.ok) {
-          // Якщо є текст - парсимо, інакше кидаємо помилку з статусом
-          let errMsg = `Помилка ${res.status}`;
-          if (text) {
-            try {
-              const errData = JSON.parse(text);
-              errMsg = errData.message || errMsg;
-            } catch {
-              // ignore JSON parse error
-            }
-          }
-          throw new Error(errMsg);
-        }
+//   const login = async (email: string, password: string) => {
+//     const res = await axios.post('http://localhost:3000/api/login', { email, password });
+//     setToken(res.data.token);
+//     setUser(res.data.user);
+//     localStorage.setItem('token', res.data.token);
+//   };
 
-        if (!text) throw new Error('Порожня відповідь сервера');
+//   const adminLogin = async (email: string, password: string) => {
+//     const res = await axios.post('http://localhost:3000/api/admin/login', { email, password });
+//     setAdminToken(res.data.token);
+//     setAdminUser(res.data.user);
+//     localStorage.setItem('adminToken', res.data.token);
+//   };
 
-        const data = JSON.parse(text);
+//   const logout = () => {
+//     setToken(null);
+//     setUser(null);
+//     localStorage.removeItem('token');
+//   };
 
-        setUser({
-          id: data.id || data._id || '',
-          email: data.email,
-          username: data.username,
-        });
+//   const adminLogout = () => {
+//     setAdminToken(null);
+//     setAdminUser(null);
+//     localStorage.removeItem('adminToken');
+//   };
 
-      } catch (error) {
-        logout();
-      }
-    };
+//   const updateUser = (newData: Partial<User>) => {
+//     setUser((prev) => (prev ? { ...prev, ...newData } : prev));
+//   };
 
-    fetchUser();
-  }, [token]);
-
-  const login = async (email: string, password: string) => {
-    try {
-      const res = await fetch('http://localhost:3000/api/admin/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
-      });
-
-      const text = await res.text();
-
-      if (!res.ok) {
-        let errMsg = `Помилка ${res.status}`;
-        if (text) {
-          try {
-            const errData = JSON.parse(text);
-            errMsg = errData.message || errMsg;
-          } catch {
-            // ignore
-          }
-        }
-        throw new Error(errMsg);
-      }
-
-      if (!text) throw new Error('Порожня відповідь сервера');
-
-      const data = JSON.parse(text);
-
-      const t = data.token;
-      const u = data.user;
-
-      setToken(t);
-      setUser(u);
-      localStorage.setItem('token', t);
-
-    } catch (error: any) {
-      throw new Error(error.message || 'Login failed');
-    }
-  };
-
-  const logout = () => {
-    setToken(null);
-    setUser(null);
-    localStorage.removeItem('token');
-  };
-
-  return (
-    <AuthContext.Provider value={{ user, token, login, logout }}>
-      {children}
-    </AuthContext.Provider>
-  );
-};
+//   return (
+//     <AuthContext.Provider
+//       value={{
+//         user,
+//         token,
+//         adminUser,
+//         adminToken,
+//         login,
+//         adminLogin,
+//         logout,
+//         adminLogout,
+//         updateUser,
+//       }}
+//     >
+//       {children}
+//     </AuthContext.Provider>
+//   );
+// };

@@ -83,13 +83,13 @@ const Leaderboard: React.FC = () => {
                     {new Date(leader.date).toLocaleDateString()}
                   </td>
                   <td className="text-center px-6 py-4 whitespace-nowrap space-x-3">
-                    <button
+                    {/* <button
                       onClick={() => setSelectedLeader(leader)}
                       className="text-indigo-600 hover:text-indigo-800 font-semibold focus:outline-none transition"
                       aria-label={`Детальніше про ${leader.username}`}
                     >
                       Детальніше
-                    </button>
+                    </button> */}
                     <button
                       onClick={() => deleteLeader(leader._id)}
                       className="inline-flex items-center gap-1 text-red-600 hover:text-red-800 font-semibold focus:outline-none transition transform hover:scale-110"

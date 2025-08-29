@@ -7,7 +7,7 @@ interface TextItem {
   difficulty: 'Легкий' | 'Середній' | 'Важкий';
 }
 
-const LANGUAGES = ['Українська', 'Англійська', 'Російська', 'Іспанська', 'Німецька'];
+const LANGUAGES = ['Українська', 'Англійська', "Польська"];
 
 export const TextManager: React.FC = () => {
   const [texts, setTexts] = useState<TextItem[]>([]);
@@ -69,7 +69,7 @@ export const TextManager: React.FC = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white rounded-lg shadow-md mt-10 font-sans">
+    <div className="w-full p-6 bg-white rounded-lg shadow-md mt-10 font-sans">
       <h1 className="text-3xl font-bold mb-6 text-center text-indigo-700">
         Менеджер текстів
       </h1>

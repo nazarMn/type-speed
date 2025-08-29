@@ -45,7 +45,7 @@ const Leaderboard: React.FC = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-white to-gray-50 py-10 px-6 sm:px-12 md:px-24 font-sans text-gray-900">
+    <div className="w-full min-h-screen bg-gradient-to-b from-white to-gray-50 py-10 px-6 sm:px-12 md:px-24 font-sans text-gray-900">
       <h1 className="text-5xl font-extrabold mb-10 text-center tracking-wide text-indigo-700">
         Лідери дня
       </h1>

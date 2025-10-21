@@ -60,6 +60,3 @@ const TypingArea = forwardRef<HTMLDivElement, TypingAreaProps>(
 );
 
 export default TypingArea;
-
-
-

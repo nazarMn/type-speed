@@ -57,5 +57,4 @@ const TypingArea = forwardRef<HTMLDivElement, TypingAreaProps>(
       </div>
     );
   }
-);
-
+);s
